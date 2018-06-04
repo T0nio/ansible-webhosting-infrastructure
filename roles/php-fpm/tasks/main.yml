@@ -1,0 +1,12 @@
+---
+- name: Install php-fpm and deps
+  apt: name={{ item }} state=present
+  with_items:
+    - php
+    - php-fpm
+    - php-mbstring
+    - php-mysql
+    - php-mcrypt
+    - libphp-phpmailer
+    - libphp-simplepie
+    - php-xml

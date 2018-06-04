@@ -1,0 +1,7 @@
+---
+- name: Install the backup dedicated
+  hosts: backup
+
+  roles:
+    - common
+    - prepareBackupSpace

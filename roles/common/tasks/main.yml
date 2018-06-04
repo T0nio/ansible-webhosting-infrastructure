@@ -1,0 +1,34 @@
+---
+- name: Install libselinux-python
+  apt:
+    name: python-selinux
+    state: present
+    update_cache: yes
+
+- name: Install vim, zsh, git, htop, less, tmux, borg
+  apt: name={{ item }} state=present
+  with_items:
+    - vim
+    - zsh
+    - git
+    - htop
+    - less
+    - tmux
+    - borgbackup
+
+- name: Reload ansible_facts
+  setup:
+
+- name: Set up iptables rules
+  template: src=iptables-save dest=/etc/iptables.rules
+
+- name: Update SSH Config
+  template: src=sshd_config dest=/etc/ssh/sshd_config
+
+- name: Restart SSH service
+  service:
+    name: ssh
+    state: restarted
+
+- name: restore /etc/iptables.rules
+  shell: "/sbin/iptables-restore /etc/iptables.rules"

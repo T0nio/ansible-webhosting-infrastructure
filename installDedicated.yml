@@ -1,0 +1,13 @@
+---
+- name: Install the dedicated server
+  hosts: dedicated
+
+  roles:
+    - common
+    - mariadb
+    - php-fpm
+    - sendmail
+    - certbot
+    - nginx
+    - addUser
+    - borg

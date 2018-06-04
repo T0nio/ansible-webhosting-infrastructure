@@ -1,0 +1,14 @@
+---
+- name: Installing a fully functionnal VPS
+  hosts: VPS
+
+  roles:
+    - common
+    - mariadb
+    - php-fpm
+    - { role: sendmail, when: enable_sendmail is defined }
+    - { role: certbot, when: item.isSSLActive|default('false') != 'false' }
+    - { role: certbot-certificates, when: item.isSSLActive|default('false') != 'false' }
+    - nginx
+    - addUser
+    - borg

@@ -1,0 +1,31 @@
+---
+- name: Include variables.
+  include_vars: main.yml
+
+- name: Define nginx_user.
+  set_fact:
+    nginx_user: "{{ __nginx_user }}"
+  when: nginx_user is not defined
+
+- name: Ensure nginx is installed.
+  apt:
+    name: nginx
+    state: present
+    update_cache: yes
+
+- include: vhosts.yml
+  when: nginx_vhosts is defined
+
+- name: Copy nginx configuration in place.
+  template:
+    src: "{{ nginx_conf_template }}"
+    dest: "{{ nginx_conf_file_path }}"
+    owner: root
+    group: "{{ root_group }}"
+    mode: 0644
+  notify:
+    - reload nginx
+
+
+- name: Ensure nginx is started and enabled to start at boot.
+  service: name=nginx state=started enabled=yes

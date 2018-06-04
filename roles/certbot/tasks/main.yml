@@ -1,0 +1,54 @@
+---
+
+- name: Check if backport enable
+  command: grep -Fxq "deb http://ftp.debian.org/debian stretch-backports main" /etc/apt/sources.list
+  register: backportpresent
+  check_mode: no
+  ignore_errors: yes
+  changed_when: no
+
+- name: enabling backports
+  lineinfile: 
+    dest: /etc/apt/sources.list
+    line: "deb http://ftp.debian.org/debian stretch-backports main"
+    state: present
+    insertafter: EOF
+  when: backportpresent.rc != 0
+
+- name: Updating cache
+  apt:
+    update_cache: yes
+
+- name: Install certbot
+  apt: 
+    name: python-certbot-nginx
+    state: present
+    default_release: stretch-backports
+
+
+- name: Check if account already registered
+  command: grep -rlqF "{{ certbot_email }}" /etc/letsencrypt/accounts/
+  register: ifaccountcreated
+  check_mode: no
+  ignore_errors: yes
+  changed_when: no
+
+- name: Creating Letsencrypt Account
+  shell: "certbot register -m {{ certbot_email }} --agree-tos"
+  when: ifaccountcreated.rc != 0 
+
+- name: Setting up renew script
+  copy: 
+    src: certRenew.sh 
+    dest: /root/certRenew.sh
+    mode: u=rwx,g=,o=
+
+- name: Setting up cron for renew
+  cron:
+    name: "Renew Certificate"
+    minute: "13"
+    hour: "3"
+    day: "*"
+    job: "/root/certRenew.sh"
+
+    

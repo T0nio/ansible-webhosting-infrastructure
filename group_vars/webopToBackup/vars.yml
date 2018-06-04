@@ -1,0 +1,5 @@
+---
+backup_host: "{{ vault_backup_host }}"
+backup_username: "{{ vault_backup_username }}"
+backup_password: "{{ vault_backup_password }}"
+backup_port: "{{ vault_backup_port }}"

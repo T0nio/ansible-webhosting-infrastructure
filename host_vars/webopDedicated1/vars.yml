@@ -1,0 +1,20 @@
+---
+ansible_host: "{{ vault_ansible_host }}"
+ansible_connection: ssh 
+ansible_user: "{{ vault_ansible_user }}"
+ansible_ssh_port: "{{ vault_ansible_ssh_port }}"
+change_ssh_port: true
+ssh_port: "{{ vault_ssh_port }}" 
+
+backup_user: "{{ vault_backup_user }}"
+backup_passwd: "{{ vault_backup_passwd }}"
+
+sendmail_envelope: "{{ vault_sendmail_envelope }}"
+server_name: "{{ vault_server_name }}"
+
+mysql_root_pwd: "{{ vault_mysql_root_pwd }}"
+
+borg_passphrase: "{{ vault_borg_passphrase }}"
+
+remote_user_name: "{{ vault_remote_user_name }}"
+remote_user_passwd: "{{ vault_remote_user_passwd }}"

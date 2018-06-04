@@ -1,0 +1,4 @@
+hosts
+host_vars/*/vault.yml
+group_vars/*/vault.yml
+*.retry

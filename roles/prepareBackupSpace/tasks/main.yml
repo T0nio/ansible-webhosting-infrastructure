@@ -1,0 +1,19 @@
+---
+- name: Creates backup directory
+  file: path=/backupData/ state=directory
+
+- name: Add the backup user
+  user:
+    name: '{{ backup_user }}'
+    shell: /bin/bash
+    password: '{{ backup_passwd }}'
+    home: /backupData/
+    create_home: no
+
+- name: Update owning of backup directory
+  file: 
+    path: /backupData/ 
+    owner: '{{ backup_user }}'
+    recurse: yes
+    state: directory
+

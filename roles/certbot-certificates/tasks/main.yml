@@ -1,0 +1,23 @@
+---
+- name: Check if account already registered
+  command: grep -rlqF "{{ certbot_email }}" /etc/letsencrypt/accounts/
+  register: ifaccountcreated
+  check_mode: no
+  ignore_errors: yes
+  changed_when: no
+
+- name: Check if Nginx is already up
+  command: service nginx status
+  register: nginxstatus
+  check_mode: no
+  ignore_errors: yes  
+
+- name: Asking Letsencrypt Certificate
+  shell: 'certbot certonly -n --authenticator standalone {{ item.letsencryptDomainChain }}'
+  when: (item.isSSLActive|default('false') != 'false') and (ifaccountcreated.rc != 0) and nginxstatus.rc != 0
+  with_items: "{{ nginx_vhosts }}"
+
+- name: Asking Letsencrypt Certificate
+  shell: 'certbot certonly -n --authenticator standalone {{ item.letsencryptDomainChain }} --pre-hook "service nginx stop" --post-hook "service nginx start"'
+  when: (item.isSSLActive|default('false') != 'false') and (ifaccountcreated.rc != 0) and nginxstatus.rc == 0
+  with_items: "{{ nginx_vhosts }}"

@@ -1,0 +1,3 @@
+---
+certbot_email: main@toni0.com
+nginx_client_max_body_size: "64M"

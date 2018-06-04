@@ -1,0 +1,102 @@
+{% block server_redirect %}
+{% if item.https_redirect is defined %}
+server {
+    listen 80;
+    {% if item.server_name is defined %}
+    server_name {{ item.server_name }};
+    {% endif %}
+    location / {
+        return 301 https://$host$request_uri;
+    }
+    location /.well-known {
+        root /var/www/;
+    }
+}
+{% endif %}
+{% endblock %}
+
+server {
+    {% block server_begin %}{% endblock %}
+
+    {% block server_basic -%}
+    listen {{ item.listen | default('80') }};
+
+{% if item.server_name is defined %}
+    server_name {{ item.server_name }};
+{% endif %}
+
+{% if item.root is defined %}
+    root {{ item.root }};
+{% endif %}
+
+    index {{ item.index | default('index.php index.html index.htm') }};
+
+{% if item.error_page is defined %}
+    error_page {{ item.error_page }};
+{% endif %}
+{% if item.access_log is defined %}
+    access_log {{ item.access_log }};
+{% endif %}
+{% if item.error_log is defined %}
+    error_log {{ item.error_log }} error;
+{% endif %}
+
+{% if item.return is defined %}
+    return {{ item.return }};
+{% endif %}
+    {% endblock %}
+
+    {% block server_ssl %}
+    {% if item.isSSLActive %}
+    ssl_certificate /etc/letsencrypt/live/{{item.certificateURI}}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/{{item.certificateURI}}/privkey.pem;
+    {% endif %}
+    {% endblock %}
+
+
+    {% block server_locations %}
+    {% for location in item.locations %}
+    location {{ location.path }} {
+    {% if location.try_files is defined %}
+        try_files {{ location.try_files }};
+    {% endif %}
+    {% if location.fastcgi_split_path_info is defined %}
+        fastcgi_split_path_info {{ location.fastcgi_split_path_info }};
+    {% endif %}
+    {% if location.index is defined %}
+        index {{ location.index }};
+    {% endif %}
+    {% if location.deny is defined %}
+        deny {{ location.deny }};
+    {% endif %}
+    {% if location.fastcgi_index is defined %}
+        fastcgi_index {{ location.fastcgi_index }};
+    {% endif %}
+    {% if location.fastcgi_pass is defined %}
+        fastcgi_pass {{ location.fastcgi_pass }};
+    {% endif %}
+    {% if location.fastcgi_param is defined %}
+        fastcgi_param {{ location.fastcgi_param }};
+    {% endif %}
+    {% if location.include is defined %}
+        include {{ location.include }};
+    {% endif %}
+    {% if location.expires is defined %}
+        expires {{ location.expires }};
+    {% endif %}
+
+    {% if location.others is defined %}
+        {{ location.others }};
+    {% endif %}
+
+        }
+    {% endfor %}
+    {% endblock %}
+
+    {% block server_end %}{% endblock %}
+
+{% if item.extra_parameters is defined %}
+    {{ item.extra_parameters|indent(4) }}
+{% endif %}
+}
+

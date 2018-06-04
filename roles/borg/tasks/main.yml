@@ -1,0 +1,43 @@
+---
+- name: Install sshpass
+  apt:
+    name: sshpass
+    state: present
+    update_cache: yes
+
+- name: Creating the backup folder to this host
+  command: 'sshpass -p {{ backup_password }} ssh -o StrictHostKeyChecking=no {{backup_username}}@{{backup_host}} -p {{backup_port}} "mkdir {{server_name}} -p"'
+
+- name: Check if borg repo exists
+  command: 'sshpass -p {{backup_password}} borg list ssh://{{backup_username}}@{{backup_host}}:{{backup_port}}/~/{{server_name}}/main'
+  environment:
+    BORG_PASSPHRASE: "{{borg_passphrase}}"
+  register: borgRepo
+  ignore_errors: True
+
+- name: Init the borg repo
+  command: 'sshpass -p {{backup_password}} borg init --encryption=repokey ssh://{{backup_username}}@{{backup_host}}:{{backup_port}}/~/{{server_name}}/main '
+  environment:
+    BORG_PASSPHRASE: "{{borg_passphrase}}"
+  when: borgRepo.rc != 0
+
+- name: Copying backup script
+  template: 
+    src: backupRoutine.sh
+    dest: /root/backup.sh
+    mode: u=rwx,g=,o=
+
+- name: MKdir /var/www/dbs
+  file:
+    path: "/var/www/dbs"
+    state: directory  
+
+- name: Setting up cron for backup script
+  cron:
+    name: "Backup"
+    minute: "{{ 59 | random }}"
+    hour: "3"
+    day: "*"
+    job: "/root/backup.sh >> /var/log/backup.log  2>&1"
+
+

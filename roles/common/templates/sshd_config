@@ -1,0 +1,11 @@
+{% if change_ssh_port is defined and change_ssh_port %}Port {{ ssh_port }}
+{% else %}#Port 22{% endif %}
+
+PermitRootLogin without-password
+ChallengeResponseAuthentication no
+UsePAM yes
+X11Forwarding no
+PrintMotd no
+AcceptEnv LANG LC_*
+Subsystem	sftp	/usr/lib/openssh/sftp-server
+PasswordAuthentication yes

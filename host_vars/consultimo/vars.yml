@@ -1,0 +1,45 @@
+---
+ansible_host: "{{ vault_ansible_host }}"
+ansible_connection: ssh 
+ansible_user: "{{ vault_ansible_user }}" 
+ansible_ssh_port: "{{ vault_ansible_ssh_port }}"
+
+server_name: consultimo.fr
+mysql_root_pwd: "{{ vault_mysql_root_pwd }}"
+borg_passphrase: "{{ vault_borg_passphrase }}"
+
+remote_user_name: "{{ vault_remote_user_name }}"
+remote_user_passwd: "{{ vault_remote_user_passwd }}"
+
+databases:
+  - database_name: consultimo
+    database_user: consultimo
+    database_passwd: "{{ vault_database_consultimo_passwd }}"
+
+nginx_vhosts:
+  - listen: "443 ssl http2"
+    state: "present"
+    https_redirect: true
+    isSSLActive: true
+    letsencryptDomainChain: "-d consultimo.fr -d www.consultimo.fr"
+    certificateURI: "consultimo.fr"
+    server_name: "consultimo.fr www.consultimo.fr"
+    root: "/var/www/consultimo.fr/public"
+    index: "index.php index.html"
+    access_log: "/var/log/nginx/consultimo.fr.access.log"
+    error_log: "/var/log/nginx/consultimo.fr.error.log"
+    template: "{{ nginx_vhost_template }}"
+    filename: "consultimo.fr.conf"
+    locations: 
+      - path: "/"
+        try_files:  $uri $uri/ /index.php?$args
+        others: if ($http_host !~ "^www\."){ rewrite ^(.*)$ http://www.$http_host$request_uri redirect; } if (!-e $request_filename){ rewrite ^/(.*)/$ /$1 redirect; }
+      - path: "~* \\.(gif|jpg|jpeg|png|css|js)$"
+        expires: max
+      - path: "~ \\.php$"
+        try_files: "$uri =404"
+        fastcgi_split_path_info: "^(.+\\.php)(/.+)$"
+        fastcgi_index: "index.php"
+        fastcgi_pass: "unix:/var/run/php/php7.0-fpm.sock"
+        fastcgi_param: "SCRIPT_FILENAME $document_root$fastcgi_script_name"
+        include: fastcgi_params

@@ -1,0 +1,16 @@
+---
+# chmod g+rw /var/www -R
+# adduser webopaccess --home /var/www/ --ingroup www-data
+
+- name: Add new user and set its home
+  user:
+    name: "{{remote_user_name}}"
+    password: "{{remote_user_passwd}}"
+    home: "/var/www"
+    group: "www-data"
+
+- name: Chmoding /var/www
+  file:
+    path: /var/www
+    mode: g+rw
+    recurse: yes
