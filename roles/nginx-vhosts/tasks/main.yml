@@ -1,4 +1,7 @@
 ---
+- name: Include variables.
+  include_vars: main.yml
+
 - name: Remove default nginx vhost config file (if configured).
   file:
     path: "{{ nginx_default_vhost_path }}"
@@ -50,3 +53,4 @@
     path: "{{ nginx_vhost_path }}/vhosts.conf"
     state: absent
   notify: reload nginx
+

@@ -30,29 +30,5 @@
     - ::1
     - localhost 
 
-- name: Creating the databases
-  mysql_db:
-    name: "{{ item.database_name }}"
-    state: present
-    login_host: "localhost"
-    login_user: root
-    login_password: "{{ mysql_root_pwd }}"
-    login_port: 3306
-  with_items: "{{ databases }}"
-  when: databases is defined
-
-- name: Creating the users
-  mysql_user:
-    name: "{{ item.database_user }}"
-    host: "localhost"
-    password: "{{ item.database_passwd }}"
-    login_host: "localhost"
-    login_user: root
-    login_password: "{{ mysql_root_pwd }}"
-    login_port: 3306
-    priv: "{{item.database_name}}.*:ALL,GRANT"
-  with_items: "{{ databases }}"
-  when: databases is defined
-
 - name: Start Mysql Service
   service: name=mysql state=started enabled=yes

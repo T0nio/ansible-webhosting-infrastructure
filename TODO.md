@@ -4,7 +4,7 @@
 
 - [x] Refactor de la recette ansible
 - [x] Ajout du role sendmail
-- [ ] Tester la recette sur un VPS vide
+- [x] Tester la recette sur un VPS vide
 - [x] Aligner MTV & PAM sur la recette ansible
 - [x] Tester la recette sur un VPS utilisé 
 - [x] Mettre en place la backup (borg)
@@ -12,7 +12,7 @@
 - [ ] Script de déploiement ? Ou pas pertinent ?
 - [ ] Faire un script de restoring
 - [x] Ajout de la création d'un user webopaccess + add group + change home
-- [ ] Vérifier que ça marche en conditions réelle ! (prochain déploiement)
+- [x] Vérifier que ça marche en conditions réelle ! (prochain déploiement)
 
 ## Backup 
 
@@ -20,10 +20,11 @@
 
 ## Mutualised dedicated
 
-- [ ] Ansible d'installation 
+- [x] Ansible d'installation 
 - [ ] Ansible d'ajout d'un site (création du VHost, letsencrypt, folder)
-- [ ] Ajout d'un user webop
-- [ ] Mise en place de la backup
+- [x] Ajout d'un user webop
+- [x] Mise en place de la backup
+- [ ] Checker comment gérer de manière différentié les différents vhosts
 
 ## Improvments
 

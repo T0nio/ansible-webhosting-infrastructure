@@ -5,10 +5,12 @@
   roles:
     - common
     - mariadb
+    - mariadb-databases
     - php-fpm
     - { role: sendmail, when: enable_sendmail is defined }
     - { role: certbot, when: item.isSSLActive|default('false') != 'false' }
     - { role: certbot-certificates, when: item.isSSLActive|default('false') != 'false' }
     - nginx
+    - nginx-vhosts
     - addUser
     - borg
