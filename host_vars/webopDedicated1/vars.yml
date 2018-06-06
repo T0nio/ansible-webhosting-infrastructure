@@ -19,6 +19,7 @@ borg_passphrase: "{{ vault_borg_passphrase }}"
 remote_user_name: "{{ vault_remote_user_name }}"
 remote_user_passwd: "{{ vault_remote_user_passwd }}"
 
-nginx_vhosts: "{{ site1_nginx_vhosts + site2_nginx_vhosts }}"
+nginx_remove_default_vhost: false
+nginx_vhosts: "{{ lebistrotdaurelie_nginx_vhosts }}"
 
-databases: "{{ site1_databases + site2_databases }}"
+databases: ""

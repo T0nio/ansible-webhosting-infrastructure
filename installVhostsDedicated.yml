@@ -1,0 +1,7 @@
+---
+- name: Install the dedicated server
+  hosts: dedicated
+
+  roles:
+    - nginx
+    - nginx-vhosts

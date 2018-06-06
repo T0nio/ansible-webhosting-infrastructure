@@ -1,5 +1,5 @@
 {% block server_redirect %}
-{% if item.https_redirect is defined %}
+{% if item.https_redirect is defined and item.https_redirect != false %}
 server {
     listen 80;
     {% if item.server_name is defined %}
