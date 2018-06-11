@@ -57,6 +57,20 @@ server {
     {% block server_locations %}
     {% for location in item.locations %}
     location {{ location.path }} {
+
+    {% if location.rewrites is defined %}
+        {% for rewrite in location.rewrites %}
+            {% if rewrite.condition is defined %}
+        if ( {{ rewrite.condition }} ){
+            rewrite {{ rewrite.scheme}};
+        }
+            {% else %}
+        rewrite {{ rewrite.scheme}};
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
+
     {% if location.try_files is defined %}
         try_files {{ location.try_files }};
     {% endif %}
@@ -86,10 +100,10 @@ server {
     {% endif %}
 
     {% if location.others is defined %}
-        {{ location.others }};
+        {{ location.others }}
     {% endif %}
 
-        }
+    }
     {% endfor %}
     {% endblock %}
 

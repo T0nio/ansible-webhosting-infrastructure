@@ -12,12 +12,12 @@
   check_mode: no
   ignore_errors: yes  
 
-- name: Asking Letsencrypt Certificate
+- name: Asking Letsencrypt Certificate without nginx
   shell: 'certbot certonly -n --authenticator standalone {{ item.letsencryptDomainChain }}'
-  when: (item.isSSLActive|default('false') != 'false') and (ifaccountcreated.rc != 0) and nginxstatus.rc != 0
+  when: (item.isSSLActive|default('false') != 'false') and (ifaccountcreated.rc == 0) and nginxstatus.rc != 0
   with_items: "{{ nginx_vhosts }}"
 
-- name: Asking Letsencrypt Certificate
+- name: Asking Letsencrypt Certificate with nginx
   shell: 'certbot certonly -n --authenticator standalone {{ item.letsencryptDomainChain }} --pre-hook "service nginx stop" --post-hook "service nginx start"'
-  when: (item.isSSLActive|default('false') != 'false') and (ifaccountcreated.rc != 0) and nginxstatus.rc == 0
+  when: (item.isSSLActive|default('false') != 'false') and (ifaccountcreated.rc == 0) and nginxstatus.rc == 0
   with_items: "{{ nginx_vhosts }}"

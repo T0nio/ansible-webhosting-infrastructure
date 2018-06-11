@@ -16,6 +16,9 @@ lebistrotdaurelie_nginx_vhosts:
     filename: "lebistrotdaurelie.fr.conf"
     locations: 
       - path: "/"
+        rewrites:
+          - condition: "!-e $request_filename"
+            scheme: "^/([^/]+)/?$ /index.php?p=$1 last"
         try_files: "$uri $uri/ /index.php?$args"
         index: "index.html index.php"
       - path: "~* \\.(gif|jpg|jpeg|png|css|js)$"

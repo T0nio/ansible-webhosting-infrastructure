@@ -1,0 +1,52 @@
+---
+ansible_host: "{{ vault_ansible_host }}"
+ansible_connection: ssh 
+ansible_user: "{{ vault_ansible_user }}" 
+ansible_ssh_port: "{{ vault_ansible_ssh_port }}"
+
+server_name: soleogastronomie.com
+mysql_root_pwd: "{{ vault_mysql_root_pwd }}"
+borg_passphrase: "{{ vault_borg_passphrase }}"
+
+remote_user_name: "{{ vault_remote_user_name }}"
+remote_user_passwd: "{{ vault_remote_user_passwd }}"
+
+databases:
+  - database_name: soleo
+    database_user: soleo
+    database_passwd: "{{ vault_database_soleo_passwd }}"
+
+nginx_vhosts:
+  - listen: "443 ssl http2"
+    state: "present"
+    https_redirect: true
+    isSSLActive: true
+    letsencryptDomainChain: "-d soleogastronomie.com -d www.soleogastronomie.com"
+    certificateURI: "soleogastronomie.com"
+    server_name: "soleogastronomie.com www.soleogastronomie.com"
+    root: "/var/www/soleogastronomie.com"
+    index: "index.php index.html"
+    access_log: "/var/log/nginx/soleogastronomie.com.access.log"
+    error_log: "/var/log/nginx/soleogastronomie.com.error.log"
+    template: "{{ nginx_vhost_template }}"
+    filename: "soleogastronomie.com.conf"
+    locations: 
+      - path: "/"
+        rewrites:
+          - condition: "!-e $request_filename"
+            scheme: "^/([^/]+)/([^/]+)/([^/]+)/?$ /index.php?p=$1&id=$2&titre=$3 last"
+          - condition: "!-e $request_filename"
+            scheme: "^/([^/]+)/?$ /index.php?p=$1 last"
+          - condition: "!-e $request_filename"
+            scheme: "^/([^/]+)/([^/]+)/([^/]+)/([^/]+)/?$ /index.php?p=$1&categorie=$2&produit=$3&titre=$4 last"
+        try_files: "$uri $uri/ /index.php?$args"
+        index: "index.html index.php"
+      - path: "~* \\.(gif|jpg|jpeg|png|css|js)$"
+        expires: max
+      - path: "~ \\.php$"
+        try_files: "$uri =404"
+        fastcgi_split_path_info: "^(.+\\.php)(/.+)$"
+        fastcgi_index: "index.php"
+        fastcgi_pass: "unix:/var/run/php/php7.0-fpm.sock"
+        fastcgi_param: "SCRIPT_FILENAME $document_root$fastcgi_script_name"
+        include: fastcgi_params

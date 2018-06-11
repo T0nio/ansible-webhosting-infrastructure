@@ -11,6 +11,9 @@ borg_passphrase: "{{ vault_borg_passphrase }}"
 remote_user_name: "{{ vault_remote_user_name }}"
 remote_user_passwd: "{{ vault_remote_user_passwd }}"
 
+php_extensions: 
+ - php-gd
+
 databases:
   - database_name: consultimo
     database_user: consultimo
@@ -33,7 +36,7 @@ nginx_vhosts:
     locations: 
       - path: "/"
         try_files:  $uri $uri/ /index.php?$args
-        others: if ($http_host !~ "^www\."){ rewrite ^(.*)$ http://www.$http_host$request_uri redirect; } if (!-e $request_filename){ rewrite ^/(.*)/$ /$1 redirect; }
+        others: if ($http_host !~ "^www\."){ rewrite ^(.*)$ http://www.$http_host$request_uri redirect; } #if (!-e $request_filename){ rewrite ^/(.*)/$ /$1 redirect; }
       - path: "~* \\.(gif|jpg|jpeg|png|css|js)$"
         expires: max
       - path: "~ \\.php$"
