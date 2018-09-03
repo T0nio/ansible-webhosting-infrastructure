@@ -1,0 +1,38 @@
+---
+
+# Steps:
+# - borg list the backups
+# - borg get last (or specific) backup 
+# - mariadb restore databases
+
+- name: Fetch the backups, to get the last one
+  command: 'sshpass -e borg list ssh://{{backup_username}}@{{backup_host}}:{{backup_port}}/~/{{server_name}}/main --short'
+  environment:
+    BORG_PASSPHRASE: "{{borg_passphrase}}"
+    SSHPASS: "{{backup_password}}"
+  register: borgOutput
+  when: specific_backup_to_restore is not defined
+
+- name: Define specific_backup_to_restore.
+  set_fact:
+    specific_backup_to_restore: "{{ borgOutput.stdout_lines[-1] }}"
+  when: specific_backup_to_restore is not defined
+
+- name: Clean potential old folder
+  file:
+    state: absent
+    path: /tmp/restore
+
+- name: Creates temp directory
+  file: path=/tmp/restore state=directory
+
+- debug:
+    var: borgOutput
+
+- name: Extract the backup
+  shell: 'export LANG="en_US.UTF-8" && sshpass -e borg extract "ssh://{{backup_username}}@{{backup_host}}:{{backup_port}}/~/{{server_name}}/main::{{ specific_backup_to_restore }}"'
+  args:
+    chdir: /tmp/restore
+  environment:
+    BORG_PASSPHRASE: "{{borg_passphrase}}"
+    SSHPASS: "{{backup_password}}"

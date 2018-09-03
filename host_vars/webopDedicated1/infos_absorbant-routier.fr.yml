@@ -1,0 +1,38 @@
+---
+
+absorbantroutier_nginx_vhosts:
+  - listen: "80" #"443 ssl http2"
+    state: "present"
+    https_redirect: false
+    isSSLActive: false
+    letsencryptDomainChain: "-d absorbant-routier.fr -d www.absorbant-routier.fr"
+    certificateURI: "absorbant-routier.fr"
+    server_name: "absorbant-routier.fr www.absorbant-routier.fr"
+    root: "/var/www/absorbant-routier.fr"
+    index: "index.php index.html"
+    access_log: "/var/log/nginx/absorbant-routier.fr.access.log"
+    error_log: "/var/log/nginx/absorbant-routier.fr.error.log"
+    template: "{{ nginx_vhost_template }}"
+    filename: "absorbant-routier.fr.conf"
+    locations: 
+      - path: "/"
+        rewrites:
+          - condition: "!-e $request_filename"
+            scheme: "^/([^/]+)/?$ /index.php?p=$1 last"
+        try_files: "$uri $uri/ /index.php?$args"
+        index: "index.html index.php"
+      - path: "~* \\.(gif|jpg|jpeg|png|css|js)$"
+        expires: max
+      - path: "~ \\.php$"
+        try_files: "$uri =404"
+        fastcgi_split_path_info: "^(.+\\.php)(/.+)$"
+        fastcgi_index: "index.php"
+        fastcgi_pass: "unix:/var/run/php/php5.6-fpm.sock"
+        fastcgi_param: "SCRIPT_FILENAME $document_root$fastcgi_script_name"
+        include: fastcgi_params
+
+
+absorbantroutier_databases:
+  - database_name: absorbantroutier
+    database_user: absorbantroutier
+    database_passwd: "{{ vault_database_absorbantroutier_passwd }}"

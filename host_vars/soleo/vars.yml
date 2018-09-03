@@ -11,10 +11,18 @@ borg_passphrase: "{{ vault_borg_passphrase }}"
 remote_user_name: "{{ vault_remote_user_name }}"
 remote_user_passwd: "{{ vault_remote_user_passwd }}"
 
+installPHP5: True
+
 databases:
   - database_name: soleo
     database_user: soleo
     database_passwd: "{{ vault_database_soleo_passwd }}"
+
+php_extensions: 
+ - php-zip
+ - php-gd
+ - php5.6-zip
+ - php5.6-gd
 
 nginx_vhosts:
   - listen: "443 ssl http2"
@@ -34,13 +42,13 @@ nginx_vhosts:
       - path: "/"
         rewrites:
           - condition: "!-e $request_filename"
-            scheme: "^/([^/]+)/([^/]+)/([^/]+)/?$ /index.php?p=$1&id=$2&titre=$3 last"
+            scheme: "^/([^/]+)/([^/]+)/([^/&]+)/?(&(.*))?$ /index.php?p=$1&id=$2&titre=$3&$5 last"
           - condition: "!-e $request_filename"
-            scheme: "^/([^/]+)/?$ /index.php?p=$1 last"
+            scheme: "^/([^/&]+)/?(.*)?(&(.*))?$ /index.php?p=$1&$3 last"
           - condition: "!-e $request_filename"
-            scheme: "^/([^/]+)/([^/]+)/([^/]+)/([^/]+)/?$ /index.php?p=$1&categorie=$2&produit=$3&titre=$4 last"
+            scheme: "^/([^/]+)/([^/]+)/([^/]+)/([^/&]+)/?(&(.*))?$ /index.php?p=$1&categorie=$2&produit=$3&titre=$4&$6 last"
         try_files: "$uri $uri/ /index.php?$args"
-        index: "index.html index.php"
+        index: "index.php"
       - path: "~* \\.(gif|jpg|jpeg|png|css|js)$"
         expires: max
       - path: "~ \\.php$"

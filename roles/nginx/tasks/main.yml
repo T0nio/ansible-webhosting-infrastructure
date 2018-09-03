@@ -13,6 +13,12 @@
     state: present
     update_cache: yes
 
+- name: Setting up fastcgi_params
+  copy: 
+    src: fastcgi_params
+    dest: /etc/nginx/fastcgi_params
+    mode: u=rwx,g=,o=
+
 - name: Copy nginx configuration in place.
   template:
     src: "{{ nginx_conf_template }}"

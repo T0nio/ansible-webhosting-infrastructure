@@ -1,6 +1,6 @@
 ---
 - name: Installing a fully functionnal VPS
-  hosts: webopToBackup
+  hosts: webopDedicated
 
   roles:
     # - common
@@ -8,9 +8,9 @@
     # - mariadb-databases
     #- php-fpm
     # - { role: sendmail, when: enable_sendmail is defined }
-    # - certbot
-    # - certbot-certificates
-    #- nginx
-    #- nginx-vhosts
-     - addUser
+    - certbot
+    - certbot-certificates
+    - nginx
+    - nginx-vhosts
+    # - addUser
     # - borg

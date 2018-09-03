@@ -10,7 +10,39 @@
     - libphp-phpmailer
     - libphp-simplepie
     - php-xml
-  
+
+- name: install php5.6 key
+  shell: "curl https://packages.sury.org/php/apt.gpg | apt-key add -"
+  when: (installPHP5|default(False) != False)
+
+- name: add source.list.d for php5.6
+  copy: 
+    src: "php.list"
+    dest: /etc/apt/sources.list.d/php.list
+    owner: root
+    mode: 600
+  when: (installPHP5|default(False) != False)
+
+- name: Install apt-transport-https
+  apt: name=apt-transport-https state=present
+
+- name: Updating cache
+  apt:
+    update_cache: yes
+  when: (installPHP5|default(False) != False)
+
+- name: Install php5.6 fpm
+  apt: name={{item}} state=present
+  with_items:
+    - php5.6
+    - php5.6-fpm
+    - php5.6-mbstring
+    - php5.6-mysql
+    - php5.6-mcrypt
+    - php5.6-xml
+  when: (installPHP5|default(False) != False)
+
+
 - name: Install php-extensions
   apt: name={{ item }} state=present
   with_items: "{{ php_extensions }}"
@@ -20,4 +52,6 @@
   shell: phpenmod {{ item }}
   with_items: php_extensions
   when: php_extensions is defined
-  notify: restart php-fpm
+  notify: 
+    - restart php-fpm
+    - restart php5-fpm

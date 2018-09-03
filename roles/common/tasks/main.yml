@@ -15,6 +15,12 @@
     - less
     - tmux
     - borgbackup
+    - curl
+
+- name: Install specific packages
+  apt: name={{ item }} state=present
+  with_items: "{{spectific_packages}}"
+  when: spectific_packages is defined
 
 - name: Reload ansible_facts
   setup:

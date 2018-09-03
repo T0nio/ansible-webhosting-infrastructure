@@ -1,0 +1,38 @@
+---
+
+seldedeneigement_nginx_vhosts:
+  - listen: "80" #"443 ssl http2"
+    state: "present"
+    https_redirect: false
+    isSSLActive: false
+    letsencryptDomainChain: "-d sel-de-deneigement.eu -d www.sel-de-deneigement.eu"
+    certificateURI: "sel-de-deneigement.eu"
+    server_name: "sel-de-deneigement.eu www.sel-de-deneigement.eu"
+    root: "/var/www/sel-de-deneigement.eu"
+    index: "index.php index.html"
+    access_log: "/var/log/nginx/sel-de-deneigement.eu.access.log"
+    error_log: "/var/log/nginx/sel-de-deneigement.eu.error.log"
+    template: "{{ nginx_vhost_template }}"
+    filename: "sel-de-deneigement.eu.conf"
+    locations: 
+      - path: "/"
+        rewrites:
+          - condition: "!-e $request_filename"
+            scheme: "^/([^/]+)/?$ /index.php?p=$1 last"
+        try_files: "$uri $uri/ /index.php?$args"
+        index: "index.html index.php"
+      - path: "~* \\.(gif|jpg|jpeg|png|css|js)$"
+        expires: max
+      - path: "~ \\.php$"
+        try_files: "$uri =404"
+        fastcgi_split_path_info: "^(.+\\.php)(/.+)$"
+        fastcgi_index: "index.php"
+        fastcgi_pass: "unix:/var/run/php/php5.6-fpm.sock"
+        fastcgi_param: "SCRIPT_FILENAME $document_root$fastcgi_script_name"
+        include: fastcgi_params
+
+seldedeneigement_databases:
+  - database_name: seldedeneigement
+    database_user: seldedeneigement
+    database_passwd: "{{ vault_database_seldedeneigement_passwd }}"
+

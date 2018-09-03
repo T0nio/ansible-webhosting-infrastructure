@@ -12,6 +12,8 @@ backup_passwd: "{{ vault_backup_passwd }}"
 sendmail_envelope: "{{ vault_sendmail_envelope }}"
 server_name: "{{ vault_server_name }}"
 
+installPHP5: True
+
 mysql_root_pwd: "{{ vault_mysql_root_pwd }}"
 
 borg_passphrase: "{{ vault_borg_passphrase }}"
@@ -20,6 +22,27 @@ remote_user_name: "{{ vault_remote_user_name }}"
 remote_user_passwd: "{{ vault_remote_user_passwd }}"
 
 nginx_remove_default_vhost: false
-nginx_vhosts: "{{ lebistrotdaurelie_nginx_vhosts }}"
+nginx_vhosts: "{{ 
+  lebistrotdaurelie_nginx_vhosts 
+  + chateaumazails_nginx_vhosts 
+  + absorbantroutier_nginx_vhosts 
+  + enrobes_nginx_vhosts 
+  + seldedeneigement_nginx_vhosts
+  + yoinvest_nginx_vhosts
+  + quintesenshautecoiffure_nginx_vhosts
+  + sotraso_nginx_vhosts
+  + webop_nginx_vhosts
+  + pixelcreative_nginx_vhosts
+  + portdelavigne_nginx_vhosts
+}}"
 
-databases: ""
+databases: "{{ 
+  chateaumazails_databases 
+  + absorbantroutier_databases 
+  + enrobes_databases 
+  + seldedeneigement_databases
+  + yoinvest_databases
+  + quintesenshautecoiffure_databases
+  + webop_databases
+  + pixelcreative_databases
+}}"

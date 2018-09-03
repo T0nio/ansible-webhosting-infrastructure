@@ -6,6 +6,7 @@
   user:
     name: "{{remote_user_name}}"
     password: "{{remote_user_passwd}}"
+    shell: "/bin/bash"
     home: "/var/www"
     group: "www-data"
 

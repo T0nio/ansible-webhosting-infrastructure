@@ -1,0 +1,9 @@
+---
+- name: Fetching the list of backups
+  command: 'sshpass -p {{backup_password}} borg list ssh://{{backup_username}}@{{backup_host}}:{{backup_port}}/~/{{server_name}}/main --short'
+  environment:
+    BORG_PASSPHRASE: "{{borg_passphrase}}"
+  register: borgOutput
+
+- debug:
+    var: borgOutput.stdout_lines

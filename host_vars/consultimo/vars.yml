@@ -11,8 +11,13 @@ borg_passphrase: "{{ vault_borg_passphrase }}"
 remote_user_name: "{{ vault_remote_user_name }}"
 remote_user_passwd: "{{ vault_remote_user_passwd }}"
 
+spectific_packages: 
+ - wkhtmltopdf
+ - libssl1.0-dev
+
 php_extensions: 
  - php-gd
+ - php-zip
 
 databases:
   - database_name: consultimo

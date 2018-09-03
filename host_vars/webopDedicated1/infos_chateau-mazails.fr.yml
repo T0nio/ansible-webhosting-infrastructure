@@ -1,0 +1,37 @@
+---
+
+chateaumazails_nginx_vhosts:
+  - listen: "80" #"443 ssl http2"
+    state: "present"
+    https_redirect: false
+    isSSLActive: False
+    letsencryptDomainChain: "-d chateau-mazails.fr -d www.chateau-mazails.fr"
+    certificateURI: "chateau-mazails.fr"
+    server_name: "chateau-mazails.fr www.chateau-mazails.fr"
+    root: "/var/www/chateau-mazails.fr"
+    index: "index.php index.html"
+    access_log: "/var/log/nginx/chateau-mazails.fr.access.log"
+    error_log: "/var/log/nginx/chateau-mazails.fr.error.log"
+    template: "{{ nginx_vhost_template }}"
+    filename: "chateau-mazails.fr.conf"
+    locations: 
+      - path: "/"
+        rewrites:
+          - condition: "!-e $request_filename"
+            scheme: "^/([^/]+)/?$ /index.php?p=$1 last"
+        try_files: "$uri $uri/ /index.php?$args"
+        index: "index.html index.php"
+      - path: "~* \\.(gif|jpg|jpeg|png|css|js)$"
+        expires: max
+      - path: "~ \\.php$"
+        try_files: "$uri =404"
+        fastcgi_split_path_info: "^(.+\\.php)(/.+)$"
+        fastcgi_index: "index.php"
+        fastcgi_pass: "unix:/var/run/php/php5.6-fpm.sock"
+        fastcgi_param: "SCRIPT_FILENAME $document_root$fastcgi_script_name"
+        include: fastcgi_params
+
+chateaumazails_databases:
+  - database_name: chateaumazails
+    database_user: chateaumazails
+    database_passwd: "{{ vault_database_chateaumazails_passwd }}"

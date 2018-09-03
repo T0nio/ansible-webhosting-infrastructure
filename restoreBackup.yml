@@ -1,0 +1,7 @@
+---
+- name: Restoring a backup. Require the install receipe to be run before
+  hosts: consultimo
+
+  roles:
+    - restore
+    #- borg-list

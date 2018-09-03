@@ -3,5 +3,6 @@
   hosts: dedicated
 
   roles:
-    - nginx
     - nginx-vhosts
+    - mariadb-databases
+    - certbot-certificates
