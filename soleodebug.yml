@@ -1,0 +1,6 @@
+---
+- name: Installing a fully functionnal VPS
+  hosts: soleo
+
+  roles:
+    - { role: sendmail, when: enable_sendmail is defined }

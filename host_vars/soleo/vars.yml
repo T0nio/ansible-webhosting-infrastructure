@@ -11,7 +11,8 @@ borg_passphrase: "{{ vault_borg_passphrase }}"
 remote_user_name: "{{ vault_remote_user_name }}"
 remote_user_passwd: "{{ vault_remote_user_passwd }}"
 
-installPHP5: True
+enable_sendmail: true
+sendmail_envelope: contact@soleogastronomie.com
 
 databases:
   - database_name: soleo
@@ -21,8 +22,6 @@ databases:
 php_extensions: 
  - php-zip
  - php-gd
- - php5.6-zip
- - php5.6-gd
 
 nginx_vhosts:
   - listen: "443 ssl http2"

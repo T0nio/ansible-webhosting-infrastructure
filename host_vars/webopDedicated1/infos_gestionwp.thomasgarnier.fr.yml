@@ -1,0 +1,36 @@
+---
+
+gestionwp_nginx_vhosts:
+  - listen: "80" #"443 ssl http2"
+    state: "present"
+    https_redirect: false #true
+    isSSLActive: false # true
+    letsencryptDomainChain: "-d gestionwp.thomasgarnier.fr -d www.gestionwp.thomasgarnier.fr"
+    certificateURI: "gestionwp.thomasgarnier.fr"
+    server_name: "gestionwp.thomasgarnier.fr www.gestionwp.thomasgarnier.fr"
+    root: "/var/www/gestionwp.thomasgarnier.fr"
+    index: "index.php index.html"
+    access_log: "/var/log/nginx/gestionwp.thomasgarnier.fr.access.log"
+    error_log: "/var/log/nginx/gestionwp.thomasgarnier.fr.error.log"
+    template: "{{ nginx_vhost_template }}"
+    filename: "gestionwp.thomasgarnier.fr.conf"
+    locations: 
+      - path: "~* /(?:uploads|files)/.*\\.php$ "
+        deny: all
+      - path: "/"
+        try_files: "$uri $uri/ /index.php?$args"
+        index: "index index.php index.html index.htm"
+      - path: "~* \\.(gif|jpg|jpeg|png|css|js)$"
+        expires: max
+      - path: "~ \\.php$"
+        try_files: "$uri =404"
+        fastcgi_split_path_info: "^(.+\\.php)(/.+)$"
+        fastcgi_index: "index.php"
+        fastcgi_pass: "unix:/var/run/php/php7.0-fpm.sock"
+        fastcgi_param: "SCRIPT_FILENAME $document_root$fastcgi_script_name"
+        include: fastcgi_params
+
+gestionwp_databases:
+  - database_name: gestionwp
+    database_user: gestionwp
+    database_passwd: "{{ vault_database_gestionwp_passwd }}"

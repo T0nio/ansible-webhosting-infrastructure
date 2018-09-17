@@ -14,6 +14,10 @@ server_name: "{{ vault_server_name }}"
 
 installPHP5: True
 
+php_extensions: 
+ - php-curl
+ - php5.6-curl
+
 mysql_root_pwd: "{{ vault_mysql_root_pwd }}"
 
 borg_passphrase: "{{ vault_borg_passphrase }}"
@@ -34,6 +38,7 @@ nginx_vhosts: "{{
   + webop_nginx_vhosts
   + pixelcreative_nginx_vhosts
   + portdelavigne_nginx_vhosts
+  + gestionwp_nginx_vhosts
 }}"
 
 databases: "{{ 
@@ -45,4 +50,5 @@ databases: "{{
   + quintesenshautecoiffure_databases
   + webop_databases
   + pixelcreative_databases
+  + gestionwp_databases
 }}"

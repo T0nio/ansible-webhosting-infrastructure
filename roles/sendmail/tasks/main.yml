@@ -5,8 +5,14 @@
     state: present
     update_cache: yes
 
-- name: Install php.ini 
-  template: src=php.ini dest=/etc/php/7.0/fpm/php.ini
+- name: Update php.ini
+  blockinfile:
+    path: /etc/php/7.0/fpm/php.ini
+    block: |
+      [mail function]
+      smtp_port = 25
+      sendmail_path = /usr/sbin/sendmail -f {{ sendmail_envelope }} -t -i
+      mail.add_x_header = On
 
 - name: restart php-fpm
   service: name=php7.0-fpm state=restarted

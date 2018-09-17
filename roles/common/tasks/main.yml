@@ -38,3 +38,9 @@
 
 - name: restore /etc/iptables.rules
   shell: "/sbin/iptables-restore /etc/iptables.rules"
+
+- name: Auto load iptables rules
+  copy: 
+    src: iptables-init
+    dest: /etc/init.d/iptables
+    mode: u=rwx,g=rx,o=rx
