@@ -1,0 +1,30 @@
+---
+
+icbdesamiantage_nginx_vhosts:
+  - listen: "443 ssl http2"
+    state: "present"
+    https_redirect: true
+    isSSLActive: true
+    letsencryptDomainChain: "-d icb-desamiantage.fr -d www.icb-desamiantage.fr"
+    certificateURI: "icb-desamiantage.fr"
+    server_name: "icb-desamiantage.fr www.icb-desamiantage.fr"
+    root: "/var/www/icb-desamiantage.fr/laravel/public"
+    index: "index.php index.html"
+    access_log: "/var/log/nginx/icb-desamiantage.fr.access.log"
+    error_log: "/var/log/nginx/icb-desamiantage.fr.error.log"
+    template: "{{ nginx_vhost_template }}"
+    filename: "icb-desamiantage.fr.conf"
+    isWordpress: false
+    locations: 
+      - path: "/"
+        try_files: "$uri $uri/ /index.php?$query_string"
+        index: "index.php"
+      - path: "~* \\.(gif|jpg|jpeg|png|css|js)$"
+        expires: max
+      - path: "~ \\.php$"
+        try_files: "$uri /index.php =404"
+        fastcgi_split_path_info: "^(.+\\.php)(/.+)$"
+        fastcgi_index: "index.php"
+        fastcgi_pass: "unix:/var/run/php/php7.2-fpm.sock"
+        fastcgi_param: "SCRIPT_FILENAME $document_root$fastcgi_script_name"
+        include: fastcgi_params

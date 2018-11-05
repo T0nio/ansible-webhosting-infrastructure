@@ -18,6 +18,9 @@ spectific_packages:
 php_extensions: 
  - php-gd
  - php-zip
+ - php7.2-gd
+ - php7.2-zip
+
 
 databases:
   - database_name: consultimo
@@ -38,6 +41,7 @@ nginx_vhosts:
     error_log: "/var/log/nginx/consultimo.fr.error.log"
     template: "{{ nginx_vhost_template }}"
     filename: "consultimo.fr.conf"
+    isWordpress: false
     locations: 
       - path: "/"
         try_files:  $uri $uri/ /index.php?$args

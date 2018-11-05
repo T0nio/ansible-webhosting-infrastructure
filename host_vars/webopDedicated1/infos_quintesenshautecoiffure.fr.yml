@@ -14,6 +14,7 @@ quintesenshautecoiffure_nginx_vhosts:
     error_log: "/var/log/nginx/quintesenshautecoiffure.fr.error.log"
     template: "{{ nginx_vhost_template }}"
     filename: "quintesenshautecoiffure.fr.conf"
+    isWordpress: false
     locations: 
       - path: "/"
         rewrites:

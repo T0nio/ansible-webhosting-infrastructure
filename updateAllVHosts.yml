@@ -4,5 +4,3 @@
 
   roles:
     - nginx-vhosts
-    #- mariadb-databases
-    #- certbot-certificates

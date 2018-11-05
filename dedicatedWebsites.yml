@@ -1,8 +1,0 @@
----
-- name: Installing the vhosts, databases and certificates in the dedicated server
-  hosts: dedicated
-
-  roles:
-    - certbot-certificates
-    - nginx-vhosts
-    - mariadb-databases

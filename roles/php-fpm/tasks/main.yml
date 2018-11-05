@@ -1,57 +1,51 @@
 ---
 - name: Install php-fpm and deps
-  apt: name={{ item }} state=present
-  with_items:
-    - php
-    - php-fpm
-    - php-mbstring
-    - php-mysql
-    - php-mcrypt
-    - libphp-phpmailer
-    - libphp-simplepie
-    - php-xml
+  apt: 
+    name: ['php', 'php-fpm', 'php-mbstring', 'php-mysql', 'php-mcrypt', 'php-xml', 'libphp-phpmailer', 'libphp-simplepie']
+    state: present
 
-- name: install php5.6 key
+- name: install php5.6 & php7.2 key
   shell: "curl https://packages.sury.org/php/apt.gpg | apt-key add -"
-  when: (installPHP5|default(False) != False)
 
-- name: add source.list.d for php5.6
+- name: add source.list.d for php5.6 et php7.2
   copy: 
     src: "php.list"
     dest: /etc/apt/sources.list.d/php.list
     owner: root
     mode: 600
-  when: (installPHP5|default(False) != False)
 
-- name: Install apt-transport-https
-  apt: name=apt-transport-https state=present
+- name: Install dependencies
+  apt:  
+    name: ["lsb-release", "ca-certificates", "apt-transport-https"]
+    state: present
 
 - name: Updating cache
   apt:
     update_cache: yes
-  when: (installPHP5|default(False) != False)
 
 - name: Install php5.6 fpm
-  apt: name={{item}} state=present
-  with_items:
-    - php5.6
-    - php5.6-fpm
-    - php5.6-mbstring
-    - php5.6-mysql
-    - php5.6-mcrypt
-    - php5.6-xml
+  apt: 
+    name: ["php5.6", "php5.6-fpm", "php5.6-mbstring", "php5.6-mysql", "php5.6-mcrypt", "php5.6-xml"]
+    state: present
   when: (installPHP5|default(False) != False)
 
 
+- name: Install php7.2 fpm
+  apt: 
+    name: ["php7.2", "php7.2-fpm", "php7.2-mbstring", "php7.2-mysql", "php7.2-xml"]
+    state: present
+
 - name: Install php-extensions
-  apt: name={{ item }} state=present
+  apt: 
+    name: "{{ item }}"
+    state: present
   with_items: "{{ php_extensions }}"
   when: php_extensions is defined
 
 - name: Enable php-extensions
-  shell: phpenmod {{ item }}
+  shell: phpenmod "{{ item }}"
   with_items: php_extensions
   when: php_extensions is defined
   notify: 
     - restart php-fpm
-    - restart php5-fpm
+    - restart php7.2-fpm

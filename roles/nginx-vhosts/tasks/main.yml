@@ -30,6 +30,7 @@
     mode: 0644
   when: item.state|default('present') != 'absent'
   with_items: "{{ nginx_vhosts }}"
+  notify: reload nginx
 
 - name: Remove managed vhost config files.
   file:
@@ -47,6 +48,15 @@
   when: item.state|default('present') != 'absent'
   with_items: "{{ nginx_vhosts }}"
   notify: reload nginx
+
+- name: Force chowning 
+  file:
+    path: /var/www/
+    owner: webopaccess
+    group: www-data
+    # when specifying mode using octal numbers, add a leading 0
+    mode: 0770
+    recurse: yes
 
 - name: Remove legacy vhosts.conf file.
   file:

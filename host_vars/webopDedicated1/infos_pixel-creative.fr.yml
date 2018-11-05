@@ -14,6 +14,7 @@ pixelcreative_nginx_vhosts:
     error_log: "/var/log/nginx/pixel-creative.fr.error.log"
     template: "{{ nginx_vhost_template }}"
     filename: "pixel-creative.fr.conf"
+    isWordpress: true
     locations: 
       - path: "~* /(?:uploads|files)/.*\\.php$ "
         deny: all

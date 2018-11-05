@@ -22,6 +22,8 @@ databases:
 php_extensions: 
  - php-zip
  - php-gd
+ - php7.2-zip
+ - php7.2-gd
 
 nginx_vhosts:
   - listen: "443 ssl http2"
@@ -37,6 +39,7 @@ nginx_vhosts:
     error_log: "/var/log/nginx/soleogastronomie.com.error.log"
     template: "{{ nginx_vhost_template }}"
     filename: "soleogastronomie.com.conf"
+    isWordpress: false
     locations: 
       - path: "/"
         rewrites:

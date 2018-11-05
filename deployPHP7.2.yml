@@ -1,0 +1,7 @@
+---
+- name: Deploying PHP7.2 to all hosts
+  hosts: webopToBackup
+
+  roles:
+    - php-fpm
+    - nginx-vhosts

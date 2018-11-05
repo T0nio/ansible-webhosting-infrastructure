@@ -1,10 +1,10 @@
 ---
 
 chateaumazails_nginx_vhosts:
-  - listen: "80" #"443 ssl http2"
+  - listen: "443 ssl http2"
     state: "present"
-    https_redirect: false
-    isSSLActive: False
+    https_redirect: true
+    isSSLActive: True
     letsencryptDomainChain: "-d chateau-mazails.fr -d www.chateau-mazails.fr"
     certificateURI: "chateau-mazails.fr"
     server_name: "chateau-mazails.fr www.chateau-mazails.fr"
@@ -14,6 +14,7 @@ chateaumazails_nginx_vhosts:
     error_log: "/var/log/nginx/chateau-mazails.fr.error.log"
     template: "{{ nginx_vhost_template }}"
     filename: "chateau-mazails.fr.conf"
+    isWordpress: true
     locations: 
       - path: "/"
         rewrites:

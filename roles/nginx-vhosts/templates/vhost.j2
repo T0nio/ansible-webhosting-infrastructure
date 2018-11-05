@@ -54,6 +54,32 @@ server {
     {% endblock %}
 
 
+    server_tokens off;
+    proxy_hide_header X-Powered-By;
+    fastcgi_hide_header X-Powered-By;
+
+    {% block securepress %}
+    {% if item.isWordpress%}
+
+        location /readme.html {
+            return 404;
+        }
+
+        location ~* ^(/php\.ini|/wp-config\.php|/wp-includes/((?:(?!js/tinymce/wp-tinymce).)+)\.php|/wp-admin/(admin-functions|install|menu-header|setup-config|([^/]+/)?menu|upgrade-functions|includes/.+)\.php)$ {
+            return 404;
+        }
+
+        location ~* ^/(.+/)?(readme|changelog|debug)\.(txt|md|html|log)$ {
+            return 404;
+        }
+
+        location ~* ^/wp-content/uploads/.*\.(\.9|73i87a|386|aaa|abc|aepl|aru|atm|aut|bat|bhx|bin|bkd|blf|bll|bmw|boo|bps|bqf|breaking_bad|btc|buk|bup|bxz|ccc|ce0|ceo|cfxxe|chm|cih|cla|cmd|com|coverton|cpl|crinf|crjoker|crypt|crypted|cryptolocker|cryptowall|ctbl|cxq|cyw|czvxce|darkness|dbd|delf|dev|dlb|dli|dll|dllx|dom|drv|dx|dxz|dyv|dyz|ecc|enciphered|encrypt|encrypted|enigma|exe1|exe_renamed|exx|ezt|ezz|fag|fjl|fnr|fuj|fun|good|gzquar|ha3|hlp|hlw|hsq|hts|iva|iws|jar|kcd|kernel_complete|kernel_pid|kernel_time|keybtc@inbox_com|kimcilware|kkk|kraken|lechiffre|let|lik|lkh|lnk|locked|locky|lok|lol!|lpaq5|magic|mfu|micro|mjg|mjz|nls|oar|ocx|osa|ozd|p5tkjw|pcx|pdcr|pgm|php|php2|php3|pid|pif|plc|poar2w|pr|pzdc|qit|qrn|r5a|rdm|rhk|rna|rokku|rrk|rsc_tmp|s7p|scr|scr|shs|ska|smm|smtmp|sop|spam|ssy|surprise|sys|tko|tps|tsa|tti|ttt|txs|upa|uzy|vb|vba|vbe|vbs|vbx|vexe|vxd|vzr|wlpginstall|wmf|ws|wsc|wsf|wsh|wss|xdu|xir|xlm|xlv|xnt|xnxx|xtbl|xxx|xyz|zix|zvz|zzz)$ {
+            return 404;
+        }
+    {% endif%}
+    {% endblock %}
+
+
     {% block server_locations %}
     {% for location in item.locations %}
     location {{ location.path }} {
@@ -72,6 +98,9 @@ server {
 
 
     {% if location.try_files is defined %}
+    	if ( $query_string ~* "\=PHP[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}" ) {
+			return 404;
+		}
         try_files {{ location.try_files }};
     {% endif %}
     {% if location.fastcgi_split_path_info is defined %}

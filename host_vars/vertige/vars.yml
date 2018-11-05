@@ -35,6 +35,7 @@ nginx_vhosts:
     error_log: "/var/log/nginx/montoitvert.fr.error.log"
     template: "{{ nginx_vhost_template }}"
     filename: "montoitvert.fr.conf"
+    isWordpress: true
     locations: 
       - path: "~* /(?:uploads|files)/.*\\.php$ "
         deny: all
@@ -47,7 +48,7 @@ nginx_vhosts:
         try_files: "$uri =404"
         fastcgi_split_path_info: "^(.+\\.php)(/.+)$"
         fastcgi_index: "index.php"
-        fastcgi_pass: "unix:/var/run/php/php7.0-fpm.sock"
+        fastcgi_pass: "unix:/var/run/php/php7.2-fpm.sock"
         fastcgi_param: "SCRIPT_FILENAME $document_root$fastcgi_script_name"
         include: fastcgi_params
   - listen: "443 ssl http2"
@@ -63,6 +64,7 @@ nginx_vhosts:
     error_log: "/var/log/nginx/my-green-roof.com.error.log"
     template: "{{ nginx_vhost_template }}"
     filename: "my-green-roof.com.conf"
+    isWordpress: true
     locations: 
       - path: "~* /(?:uploads|files)/.*\\.php$ "
         deny: all
